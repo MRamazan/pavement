@@ -430,7 +430,7 @@ export function ReportForm() {
             >
               Describe the problem{" "}
               <span style={{ color: "var(--text-secondary)", fontWeight: 400 }}>
-                (optional — helps AI accuracy)
+                (optional, helps AI accuracy)
               </span>
             </label>
             <textarea
@@ -649,7 +649,7 @@ export function ReportForm() {
                 style={{ background: "#FEF2F2", color: "#DC2626" }}
               >
                 <Shield size={12} />
-                Active safety risk — requires immediate attention
+                Active safety risk - requires immediate attention
               </div>
             )}
           </div>

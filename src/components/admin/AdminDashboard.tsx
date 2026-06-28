@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
-import { Search, Filter, RefreshCw, Plus, ChevronDown } from "lucide-react";
+import { Search, RefreshCw, Plus, SlidersHorizontal, X } from "lucide-react";
 import Link from "next/link";
 import { Navbar } from "@/components/ui/Navbar";
 import { StatsBar } from "@/components/admin/StatsBar";
@@ -47,7 +47,6 @@ export default function AdminDashboard() {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time mount load from localStorage
     const allTickets = loadData();
 
-    // Handle direct ticket link from report form
     const targetId = searchParams.get("ticket");
     const target = targetId
       ? allTickets.find((t) => t.id === targetId)
@@ -71,7 +70,6 @@ export default function AdminDashboard() {
     setStats(getStats());
   };
 
-  // Filter + search + sort
   const filteredTickets = tickets
     .filter((t) => {
       if (filterPriority !== "ALL" && t.analysis.priority !== filterPriority)
@@ -100,10 +98,11 @@ export default function AdminDashboard() {
       if (sortMode === "date") {
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       }
-      // Status: open first, then in_progress, then resolved, then closed
       const statusOrder = { OPEN: 0, IN_PROGRESS: 1, RESOLVED: 2, CLOSED: 3 };
       return statusOrder[a.status] - statusOrder[b.status];
     });
+
+  const hasActiveFilters = filterPriority !== "ALL" || filterStatus !== "ALL" || searchQuery;
 
   return (
     <div
@@ -112,38 +111,39 @@ export default function AdminDashboard() {
     >
       <Navbar />
 
-      <div className="flex-1 mx-auto w-full px-4 sm:px-6 py-8" style={{ maxWidth: "1400px" }}>
+      <div className="flex-1 mx-auto w-full px-4 sm:px-6 py-7" style={{ maxWidth: "1400px" }}>
+
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-end justify-between mb-6">
           <div>
             <h1
-              className="text-xl font-bold"
-              style={{ color: "var(--text-primary)", letterSpacing: "-0.02em" }}
+              className="font-semibold"
+              style={{ color: "var(--text-primary)", fontSize: "18px", letterSpacing: "-0.02em" }}
             >
-              Admin Panel
+              Dashboard
             </h1>
             <p className="text-sm mt-0.5" style={{ color: "var(--text-secondary)" }}>
-              {stats.total} tickets · {stats.open} open · {stats.critical} critical
+              {stats.total} tickets total
             </p>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => loadData()}
-              className="p-2 rounded-xl transition-colors hover:opacity-70"
+              className="p-2 rounded-lg transition-opacity hover:opacity-60"
               style={{
                 background: "var(--surface)",
                 border: "1px solid var(--border)",
               }}
               title="Refresh"
             >
-              <RefreshCw size={15} style={{ color: "var(--text-secondary)" }} />
+              <RefreshCw size={14} style={{ color: "var(--text-secondary)" }} />
             </button>
             <Link
               href="/"
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90"
-              style={{ background: "var(--accent)" }}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-medium text-white transition-opacity hover:opacity-85"
+              style={{ background: "var(--text-primary)" }}
             >
-              <Plus size={14} />
+              <Plus size={13} />
               New Report
             </Link>
           </div>
@@ -152,162 +152,198 @@ export default function AdminDashboard() {
         {/* Stats */}
         {isSeeded && <StatsBar stats={stats} />}
 
-        {/* Controls */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-5">
+        {/* Search + Controls row */}
+        <div className="flex items-center gap-2 mb-4">
           {/* Search */}
           <div className="relative flex-1">
             <Search
-              size={14}
+              size={13}
               className="absolute left-3 top-1/2 -translate-y-1/2"
-              style={{ color: "var(--text-secondary)" }}
+              style={{ color: "var(--text-secondary)", opacity: 0.5 }}
             />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search tickets, locations, categories..."
-              className="w-full text-sm pl-9 pr-4 py-2.5 rounded-xl outline-none"
+              placeholder="Search tickets..."
+              className="w-full text-sm pl-8 pr-4 py-2 rounded-lg outline-none"
               style={{
                 border: "1px solid var(--border)",
                 background: "var(--surface)",
                 color: "var(--text-primary)",
               }}
             />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2"
+              >
+                <X size={12} style={{ color: "var(--text-secondary)" }} />
+              </button>
+            )}
           </div>
-
-          {/* Filter toggle */}
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors"
-            style={{
-              border: "1px solid var(--border)",
-              background: showFilters ? "var(--text-primary)" : "var(--surface)",
-              color: showFilters ? "#fff" : "var(--text-secondary)",
-            }}
-          >
-            <Filter size={13} />
-            Filters
-            <ChevronDown
-              size={12}
-              style={{
-                transform: showFilters ? "rotate(180deg)" : "none",
-                transition: "transform 0.2s",
-              }}
-            />
-          </button>
 
           {/* Sort */}
           <select
             value={sortMode}
             onChange={(e) => setSortMode(e.target.value as SortMode)}
-            className="text-sm px-4 py-2.5 rounded-xl outline-none cursor-pointer"
+            className="text-sm px-3 py-2 rounded-lg outline-none cursor-pointer"
             style={{
               border: "1px solid var(--border)",
               background: "var(--surface)",
               color: "var(--text-primary)",
             }}
           >
-            <option value="priority">Sort: Priority Score</option>
-            <option value="date">Sort: Newest First</option>
-            <option value="status">Sort: Status</option>
+            <option value="priority">Priority</option>
+            <option value="date">Newest</option>
+            <option value="status">Status</option>
           </select>
+
+          {/* Filter toggle */}
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm transition-colors"
+            style={{
+              border: `1px solid ${showFilters || hasActiveFilters ? "var(--text-primary)" : "var(--border)"}`,
+              background: showFilters || hasActiveFilters ? "var(--text-primary)" : "var(--surface)",
+              color: showFilters || hasActiveFilters ? "#fff" : "var(--text-secondary)",
+            }}
+          >
+            <SlidersHorizontal size={13} />
+            <span className="hidden sm:inline text-sm">Filter</span>
+            {hasActiveFilters && filterPriority !== "ALL" || hasActiveFilters && filterStatus !== "ALL" ? (
+              <span
+                className="w-1.5 h-1.5 rounded-full"
+                style={{ background: "var(--accent)" }}
+              />
+            ) : null}
+          </button>
         </div>
 
-        {/* Expanded filters */}
+        {/* Filter panel */}
         {showFilters && (
           <div
-            className="flex flex-wrap gap-2 mb-5 p-4 rounded-xl animate-fade-in-up"
+            className="mb-4 p-4 rounded-xl animate-fade-in-up"
             style={{ background: "var(--surface)", border: "1px solid var(--border)" }}
           >
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>
-                Priority:
+            <div className="flex items-center gap-3 flex-wrap mb-3">
+              <span className="text-xs font-medium w-14" style={{ color: "var(--text-secondary)" }}>
+                Priority
               </span>
-              {(["ALL", "CRITICAL", "HIGH", "MEDIUM", "LOW"] as const).map(
-                (p) => (
-                  <button
-                    key={p}
-                    onClick={() => setFilterPriority(p)}
-                    className="text-xs px-3 py-1.5 rounded-lg font-medium transition-all"
-                    style={{
-                      background:
-                        filterPriority === p
-                          ? p === "ALL"
-                            ? "var(--text-primary)"
-                            : PRIORITY_CONFIG[p as Priority].bgColor
-                          : "var(--bg)",
-                      color:
-                        filterPriority === p
-                          ? p === "ALL"
-                            ? "#fff"
-                            : PRIORITY_CONFIG[p as Priority].color
-                          : "var(--text-secondary)",
-                      border: `1px solid ${
-                        filterPriority === p
-                          ? p === "ALL"
-                            ? "var(--text-primary)"
-                            : PRIORITY_CONFIG[p as Priority].borderColor
-                          : "var(--border)"
-                      }`,
-                    }}
-                  >
-                    {p === "ALL" ? "All Priorities" : p}
-                  </button>
-                )
-              )}
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {(["ALL", "CRITICAL", "HIGH", "MEDIUM", "LOW"] as const).map(
+                  (p) => (
+                    <button
+                      key={p}
+                      onClick={() => setFilterPriority(p)}
+                      className="text-xs px-3 py-1 rounded-md font-medium transition-all"
+                      style={{
+                        background:
+                          filterPriority === p
+                            ? p === "ALL"
+                              ? "var(--text-primary)"
+                              : PRIORITY_CONFIG[p as Priority].bgColor
+                            : "var(--bg)",
+                        color:
+                          filterPriority === p
+                            ? p === "ALL"
+                              ? "#fff"
+                              : PRIORITY_CONFIG[p as Priority].color
+                            : "var(--text-secondary)",
+                        border: `1px solid ${
+                          filterPriority === p
+                            ? p === "ALL"
+                              ? "var(--text-primary)"
+                              : PRIORITY_CONFIG[p as Priority].borderColor
+                            : "var(--border)"
+                        }`,
+                      }}
+                    >
+                      {p === "ALL" ? "All" : p}
+                    </button>
+                  )
+                )}
+              </div>
             </div>
 
             <div
-              className="w-full h-px"
+              className="w-full h-px mb-3"
               style={{ background: "var(--border)" }}
             />
 
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>
-                Status:
+            <div className="flex items-center gap-3 flex-wrap">
+              <span className="text-xs font-medium w-14" style={{ color: "var(--text-secondary)" }}>
+                Status
               </span>
-              {(["ALL", "OPEN", "IN_PROGRESS", "RESOLVED", "CLOSED"] as const).map(
-                (s) => (
-                  <button
-                    key={s}
-                    onClick={() => setFilterStatus(s)}
-                    className="text-xs px-3 py-1.5 rounded-lg font-medium transition-all"
-                    style={{
-                      background:
-                        filterStatus === s
-                          ? s === "ALL"
-                            ? "var(--text-primary)"
-                            : STATUS_CONFIG[s as TicketStatus].bgColor
-                          : "var(--bg)",
-                      color:
-                        filterStatus === s
-                          ? s === "ALL"
-                            ? "#fff"
-                            : STATUS_CONFIG[s as TicketStatus].color
-                          : "var(--text-secondary)",
-                      border: `1px solid ${filterStatus === s ? "currentColor" : "var(--border)"}`,
-                    }}
-                  >
-                    {s === "ALL" ? "All Statuses" : STATUS_CONFIG[s as TicketStatus]?.label ?? s}
-                  </button>
-                )
-              )}
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {(["ALL", "OPEN", "IN_PROGRESS", "RESOLVED", "CLOSED"] as const).map(
+                  (s) => (
+                    <button
+                      key={s}
+                      onClick={() => setFilterStatus(s)}
+                      className="text-xs px-3 py-1 rounded-md font-medium transition-all"
+                      style={{
+                        background:
+                          filterStatus === s
+                            ? s === "ALL"
+                              ? "var(--text-primary)"
+                              : STATUS_CONFIG[s as TicketStatus].bgColor
+                            : "var(--bg)",
+                        color:
+                          filterStatus === s
+                            ? s === "ALL"
+                              ? "#fff"
+                              : STATUS_CONFIG[s as TicketStatus].color
+                            : "var(--text-secondary)",
+                        border: `1px solid ${filterStatus === s ? "currentColor" : "var(--border)"}`,
+                      }}
+                    >
+                      {s === "ALL" ? "All" : STATUS_CONFIG[s as TicketStatus]?.label ?? s}
+                    </button>
+                  )
+                )}
+              </div>
             </div>
+
+            {hasActiveFilters && (
+              <button
+                onClick={() => {
+                  setFilterPriority("ALL");
+                  setFilterStatus("ALL");
+                  setSearchQuery("");
+                }}
+                className="mt-3 text-xs"
+                style={{ color: "var(--accent)" }}
+              >
+                Clear all filters
+              </button>
+            )}
           </div>
+        )}
+
+        {/* Count line */}
+        {filteredTickets.length > 0 && (
+          <p
+            className="text-xs mb-3"
+            style={{ color: "var(--text-secondary)", opacity: 0.6 }}
+          >
+            {filteredTickets.length} ticket{filteredTickets.length !== 1 ? "s" : ""}
+            {hasActiveFilters ? " (filtered)" : ""}
+          </p>
         )}
 
         {/* Main layout: list + detail */}
         <div
-          className="grid gap-5"
+          className="grid gap-4"
           style={{
-            gridTemplateColumns: selectedTicket ? "1fr 420px" : "1fr",
+            gridTemplateColumns: selectedTicket ? "1fr 400px" : "1fr",
           }}
         >
           {/* Ticket list */}
-          <div className="space-y-2.5">
+          <div className="space-y-2">
             {filteredTickets.length === 0 ? (
               <div
-                className="text-center py-16 rounded-2xl"
+                className="text-center py-16 rounded-xl"
                 style={{
                   background: "var(--surface)",
                   border: "1px dashed var(--border)",
@@ -324,41 +360,24 @@ export default function AdminDashboard() {
                   className="text-sm font-medium"
                   style={{ color: "var(--text-primary)" }}
                 >
-                  {searchQuery || filterPriority !== "ALL" || filterStatus !== "ALL"
-                    ? "No tickets match your filters"
-                    : "No tickets yet"}
+                  {hasActiveFilters ? "No tickets match" : "No tickets yet"}
                 </p>
                 <p
                   className="text-xs mt-1"
                   style={{ color: "var(--text-secondary)" }}
                 >
-                  {searchQuery || filterPriority !== "ALL" || filterStatus !== "ALL"
-                    ? "Try adjusting your search or filters"
-                    : "Submit a report from the home page to get started"}
+                  {hasActiveFilters
+                    ? "Try adjusting your filters"
+                    : "Submit a report from the home page"}
                 </p>
               </div>
             ) : (
               <>
-                <p
-                  className="text-xs font-medium mb-3"
-                  style={{ color: "var(--text-secondary)" }}
-                >
-                  {filteredTickets.length} ticket{filteredTickets.length !== 1 ? "s" : ""}
-                  {filterPriority !== "ALL" || filterStatus !== "ALL" || searchQuery
-                    ? " (filtered)"
-                    : ""}
-                  {" · Sorted by "}
-                  {sortMode === "priority"
-                    ? "priority score"
-                    : sortMode === "date"
-                    ? "newest first"
-                    : "status"}
-                </p>
                 {filteredTickets.map((ticket, i) => (
                   <div
                     key={ticket.id}
                     className="animate-fade-in-up"
-                    style={{ animationDelay: `${i * 40}ms`, animationFillMode: "both" }}
+                    style={{ animationDelay: `${i * 30}ms`, animationFillMode: "both" }}
                   >
                     <TicketCard
                       ticket={ticket}
@@ -378,7 +397,7 @@ export default function AdminDashboard() {
           {/* Detail panel */}
           {selectedTicket && (
             <div
-              className="rounded-2xl overflow-hidden lg:sticky lg:top-5 animate-fade-in-up"
+              className="rounded-xl overflow-hidden lg:sticky lg:top-5 animate-fade-in-up"
               style={{
                 border: "1px solid var(--border)",
                 maxHeight: "calc(100vh - 100px)",

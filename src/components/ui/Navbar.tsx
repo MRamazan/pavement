@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { AlertTriangle, LayoutDashboard, Plus } from "lucide-react";
+import { LayoutDashboard, Plus } from "lucide-react";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -26,16 +26,6 @@ export function Navbar() {
         <div className="flex items-center justify-between h-14">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div
-              className="flex items-center justify-center rounded-lg"
-              style={{
-                width: "32px",
-                height: "32px",
-                backgroundColor: "var(--accent)",
-              }}
-            >
-              <AlertTriangle size={16} color="white" strokeWidth={2.5} />
-            </div>
             <div>
               <span
                 className="font-bold tracking-tight"

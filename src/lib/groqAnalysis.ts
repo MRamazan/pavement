@@ -99,7 +99,7 @@ Respond with ONLY this JSON structure, no other text:
 
   const rawText = response.choices[0]?.message?.content ?? "";
 
-  // Parse JSON — handle potential markdown wrapping
+  // Parse JSON - handle potential markdown wrapping
   let parsed: Record<string, unknown>;
   try {
     const cleaned = rawText

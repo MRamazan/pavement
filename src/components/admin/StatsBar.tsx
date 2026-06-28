@@ -28,88 +28,77 @@ export function StatsBar({ stats }: StatsBarProps) {
     label: string;
     value: number | string;
     icon: React.ElementType;
-    color: string;
-    bg: string;
+    accent: string;
   }[] = [
     {
-      label: "Total Tickets",
+      label: "Total",
       value: stats.total,
       icon: FileText,
-      color: "var(--text-primary)",
-      bg: "var(--surface)",
+      accent: "var(--text-secondary)",
     },
     {
       label: "Open",
       value: stats.open,
       icon: Clock,
-      color: "var(--accent)",
-      bg: "var(--accent-light)",
+      accent: "var(--accent)",
     },
     {
       label: "In Progress",
       value: stats.inProgress,
       icon: Loader2,
-      color: "#3B82F6",
-      bg: "#EFF6FF",
+      accent: "#3B82F6",
     },
     {
       label: "Resolved",
       value: stats.resolved,
       icon: CheckCircle2,
-      color: "#059669",
-      bg: "#ECFDF5",
+      accent: "#059669",
     },
     {
       label: "Critical",
       value: stats.critical,
       icon: AlertOctagon,
-      color: "#DC2626",
-      bg: "#FEF2F2",
+      accent: "#DC2626",
     },
     {
-      label: "Safety Risks",
+      label: "Safety",
       value: stats.safetyRisks,
       icon: Shield,
-      color: "#DC2626",
-      bg: "#FEF2F2",
+      accent: "#DC2626",
     },
     {
-      label: "Avg. Score",
+      label: "Avg Score",
       value: stats.avgScore,
       icon: Gauge,
-      color: "#D97706",
-      bg: "#FFFBEB",
+      accent: "#D97706",
     },
   ];
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5 mb-6">
-      {cards.map(({ label, value, icon: Icon, color, bg }) => (
+    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 mb-6">
+      {cards.map(({ label, value, icon: Icon, accent }) => (
         <div
           key={label}
-          className="p-3.5 rounded-xl"
+          className="p-3 rounded-lg"
           style={{
             background: "var(--surface)",
             border: "1px solid var(--border)",
           }}
         >
-          <div
-            className="inline-flex items-center justify-center rounded-lg mb-2"
-            style={{ width: "28px", height: "28px", background: bg }}
-          >
-            <Icon size={14} style={{ color }} />
+          <div className="flex items-center justify-between mb-2">
+            <p
+              className="text-xs"
+              style={{ color: "var(--text-secondary)" }}
+            >
+              {label}
+            </p>
+            <Icon size={12} style={{ color: accent, opacity: 0.7 }} />
           </div>
           <p
-            className="text-lg font-bold leading-none"
-            style={{ color: "var(--text-primary)" }}
+            className="text-xl font-semibold leading-none"
+            style={{ color: "var(--text-primary)", letterSpacing: "-0.02em" }}
           >
             {value}
-          </p>
-          <p
-            className="text-xs mt-1 truncate"
-            style={{ color: "var(--text-secondary)" }}
-          >
-            {label}
           </p>
         </div>
       ))}

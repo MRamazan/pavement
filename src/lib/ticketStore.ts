@@ -128,7 +128,7 @@ export function seedDemoData(): void {
       },
       analysis: {
         issueType: "pothole",
-        issueSummary: "Large structural pothole — immediate traffic hazard",
+        issueSummary: "Large structural pothole: immediate traffic hazard",
         detailedDescription:
           "A deep pothole approximately 45cm in diameter and 12cm deep has formed at a heavily trafficked intersection. Located directly in a bus lane and near a pedestrian crossing, it poses significant risk to cyclists, vehicles, and pedestrians.",
         priorityScore: 91,
@@ -188,7 +188,7 @@ export function seedDemoData(): void {
       },
       analysis: {
         issueType: "broken_streetlight",
-        issueSummary: "Non-functional streetlight — park entrance safety concern",
+        issueSummary: "Non-functional streetlight: park entrance safety concern",
         detailedDescription:
           "A park-entrance streetlight has been completely non-functional for an estimated 5+ days. The area serves as a primary pedestrian route connecting a residential neighborhood to the subway station, used heavily during evening rush hours.",
         priorityScore: 68,
@@ -218,7 +218,7 @@ export function seedDemoData(): void {
       },
       analysis: {
         issueType: "cracked_sidewalk",
-        issueSummary: "Severely cracked sidewalk panel — confirmed trip hazard",
+        issueSummary: "Severely cracked sidewalk panel: confirmed trip hazard",
         detailedDescription:
           "A 1.2m × 0.9m concrete sidewalk panel has fractured into multiple sections with a vertical displacement of approximately 5cm between sections. User reports a confirmed trip incident. Located on a route commonly used by elderly residents accessing a nearby pharmacy.",
         priorityScore: 58,
@@ -248,7 +248,7 @@ export function seedDemoData(): void {
       },
       analysis: {
         issueType: "illegal_dumping",
-        issueSummary: "Bulky item illegal dumping — sidewalk obstruction",
+        issueSummary: "Bulky item illegal dumping: sidewalk obstruction",
         detailedDescription:
           "A large mattress and two cardboard boxes have been illegally deposited on a public sidewalk adjacent to a warehouse district. The obstruction reduces usable sidewalk width to below ADA-compliant minimums (currently ~60cm, standard requires 120cm+).",
         priorityScore: 38,

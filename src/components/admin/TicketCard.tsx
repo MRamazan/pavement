@@ -1,6 +1,6 @@
 "use client";
 
-import { MapPin, Calendar, Shield, ChevronRight } from "lucide-react";
+import { MapPin, Calendar, Shield } from "lucide-react";
 import { PriorityBadge, SeverityBar } from "@/components/ui/PriorityBadge";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { CATEGORY_LABELS } from "@/types";
@@ -29,21 +29,21 @@ export function TicketCard({ ticket, isSelected, onClick }: TicketCardProps) {
 
   return (
     <div
-      className="ticket-card p-4 rounded-xl cursor-pointer"
+      className="ticket-card px-4 py-3.5 rounded-xl cursor-pointer"
       onClick={onClick}
       style={{
-        background: isSelected ? "var(--accent-light)" : "var(--surface)",
-        border: `1px solid ${isSelected ? "var(--accent)" : "var(--border)"}`,
+        background: isSelected ? "var(--surface)" : "var(--surface)",
+        border: `1px solid ${isSelected ? "var(--text-primary)" : "var(--border)"}`,
         outline: "none",
       }}
     >
-      <div className="flex items-start gap-3">
+      <div className="flex items-center gap-3">
         {/* Thumbnail */}
         <div
           className="flex-shrink-0 rounded-lg overflow-hidden"
           style={{
-            width: "52px",
-            height: "52px",
+            width: "44px",
+            height: "44px",
             background: "var(--bg)",
             border: "1px solid var(--border)",
           }}
@@ -56,8 +56,8 @@ export function TicketCard({ ticket, isSelected, onClick }: TicketCardProps) {
             />
           ) : (
             <div
-              className="w-full h-full flex items-center justify-center text-lg"
-              style={{ fontSize: "22px" }}
+              className="w-full h-full flex items-center justify-center"
+              style={{ fontSize: "18px" }}
             >
               {getIssueEmoji(analysis.issueType)}
             </div>
@@ -66,10 +66,10 @@ export function TicketCard({ ticket, isSelected, onClick }: TicketCardProps) {
 
         {/* Content */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1 flex-wrap">
+          <div className="flex items-center gap-2 mb-0.5">
             <span
-              className="text-xs font-mono font-semibold"
-              style={{ color: "var(--text-secondary)" }}
+              className="text-xs font-mono"
+              style={{ color: "var(--text-secondary)", opacity: 0.7 }}
             >
               {ticket.ticketNumber}
             </span>
@@ -80,47 +80,41 @@ export function TicketCard({ ticket, isSelected, onClick }: TicketCardProps) {
               score={analysis.priorityScore}
             />
             {analysis.safetyRisk && (
-              <Shield size={11} style={{ color: "#DC2626" }} />
+              <Shield size={10} style={{ color: "#DC2626" }} />
             )}
-            <div className="ml-auto">
+            <div className="ml-auto flex items-center gap-1.5">
               <StatusBadge status={ticket.status} size="sm" />
             </div>
           </div>
 
           <p
-            className="text-sm font-medium truncate mb-1"
+            className="text-sm font-medium truncate"
             style={{ color: "var(--text-primary)" }}
           >
             {analysis.issueSummary}
           </p>
 
           <div
-            className="flex items-center gap-3 text-xs"
+            className="flex items-center gap-2 text-xs mt-0.5"
             style={{ color: "var(--text-secondary)" }}
           >
-            <span>{CATEGORY_LABELS[analysis.issueType]}</span>
+            <span style={{ opacity: 0.7 }}>{CATEGORY_LABELS[analysis.issueType]}</span>
             {location.address && (
               <>
-                <span>·</span>
-                <span className="flex items-center gap-0.5 truncate">
-                  <MapPin size={10} />
+                <span style={{ opacity: 0.3 }}>·</span>
+                <span className="flex items-center gap-0.5 truncate" style={{ opacity: 0.7 }}>
+                  <MapPin size={9} />
                   {location.address}
                 </span>
               </>
             )}
-            <span>·</span>
-            <span className="flex items-center gap-0.5 whitespace-nowrap">
-              <Calendar size={10} />
+            <span style={{ opacity: 0.3 }}>·</span>
+            <span className="flex items-center gap-0.5 whitespace-nowrap" style={{ opacity: 0.7 }}>
+              <Calendar size={9} />
               {formatRelativeTime(ticket.createdAt)}
             </span>
           </div>
         </div>
-
-        <ChevronRight
-          size={14}
-          className="flex-shrink-0 mt-1"
-          style={{ color: "var(--text-secondary)" }}
-        />
       </div>
 
       {/* Severity bar */}
