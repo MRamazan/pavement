@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+:root {
+  --bg: #F8F9FA;
+  --surface: #FFFFFF;
+  --border: #E2E8F0;
+  --text-primary: #0F1B2D;
+  --text-secondary: #64748B;
+  --accent: #E8400C;
+  --accent-light: #FFF0EB;
+  --warning: #F59E0B;
+  --success: #10B981;
+  --info: #3B82F6;
+  --critical: #DC2626;
+  --high: #E8400C;
+  --medium: #F59E0B;
+  --low: #10B981;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.95); opacity: 1; }
+  70% { transform: scale(1.1); opacity: 0; }
+  100% { transform: scale(1.1); opacity: 0; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.severity-bar {
+  height: 4px;
+  border-radius: 2px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ticket-card {
+  transition: all 0.2s ease;
+}
+
+.ticket-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+
+.upload-zone {
+  transition: all 0.25s ease;
+  border: 2px dashed var(--border);
+}
+
+.upload-zone:hover, .upload-zone.drag-over {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
