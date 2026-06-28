@@ -61,8 +61,6 @@ export function ReportForm() {
     if (savedKey) {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time mount sync from localStorage
       setApiKey(savedKey);
-    } else {
-      setShowApiKeyInput(true);
     }
   }, []);
 
@@ -114,18 +112,14 @@ export function ReportForm() {
   };
 
   const handleAnalyze = async () => {
-    if (!apiKey.trim()) {
-      setShowApiKeyInput(true);
-      setError("Please enter your Groq API key to continue.");
-      return;
-    }
-
     if (!imageBase64 && !userDescription.trim()) {
       setError("Please provide an image or a description of the issue.");
       return;
     }
 
-    localStorage.setItem(GROQ_API_KEY_STORAGE, apiKey.trim());
+    if (apiKey.trim()) {
+      localStorage.setItem(GROQ_API_KEY_STORAGE, apiKey.trim());
+    }
     setError(null);
     setStep("analyzing");
     setAnalysisStage(0);
@@ -218,10 +212,10 @@ export function ReportForm() {
 
   return (
     <div className="w-full max-w-2xl mx-auto">
-      {/* API Key Banner */}
+      {/* API Key Banner (optional / advanced) */}
       {showApiKeyInput && (
         <div
-          className="mb-6 p-4 rounded-xl"
+          className="mb-6 p-4 rounded-xl animate-fade-in-up"
           style={{
             background: "var(--accent-light)",
             border: "1px solid var(--accent)",
@@ -233,11 +227,20 @@ export function ReportForm() {
               style={{ color: "var(--accent)", flexShrink: 0, marginTop: "2px" }}
             />
             <div className="flex-1">
-              <p className="text-sm font-semibold mb-2" style={{ color: "var(--accent)" }}>
-                Groq API Key Required
-              </p>
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-sm font-semibold" style={{ color: "var(--accent)" }}>
+                  Use your own Groq API key (optional)
+                </p>
+                <button
+                  onClick={() => setShowApiKeyInput(false)}
+                  className="text-xs"
+                  style={{ color: "var(--text-secondary)" }}
+                >
+                  ✕
+                </button>
+              </div>
               <p className="text-xs mb-3" style={{ color: "var(--text-secondary)" }}>
-                Get a free key at{" "}
+                This demo already works without one. Get a free key at{" "}
                 <a
                   href="https://console.groq.com"
                   target="_blank"
@@ -246,8 +249,8 @@ export function ReportForm() {
                   style={{ color: "var(--accent)" }}
                 >
                   console.groq.com
-                </a>
-                . Stored locally, never sent to our servers.
+                </a>{" "}
+                only if you want to use your own quota instead of the shared demo key. Stored locally, never sent to our servers.
               </p>
               <div className="flex gap-2">
                 <input
@@ -279,6 +282,17 @@ export function ReportForm() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Toggle to reveal the optional API key field */}
+      {!showApiKeyInput && (
+        <button
+          onClick={() => setShowApiKeyInput(true)}
+          className="mb-4 text-xs underline"
+          style={{ color: "var(--text-secondary)" }}
+        >
+          {apiKey ? "Using your own Groq API key" : "Use your own Groq API key instead"}
+        </button>
       )}
 
       {/* Step: Upload */}
@@ -489,42 +503,6 @@ export function ReportForm() {
             </div>
           </div>
 
-          {/* API key (if not set) */}
-          {!apiKey && (
-            <div>
-              <label
-                className="block text-sm font-medium mb-2"
-                style={{ color: "var(--text-primary)" }}
-              >
-                Groq API Key
-              </label>
-              <input
-                type="password"
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                placeholder="gsk_..."
-                className="w-full text-sm px-4 py-3 rounded-xl outline-none"
-                style={{
-                  border: "1px solid var(--border)",
-                  background: "var(--surface)",
-                  color: "var(--text-primary)",
-                }}
-              />
-              <p className="mt-1.5 text-xs" style={{ color: "var(--text-secondary)" }}>
-                Free at{" "}
-                <a
-                  href="https://console.groq.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline"
-                  style={{ color: "var(--accent)" }}
-                >
-                  console.groq.com
-                </a>
-                . Stored only in your browser.
-              </p>
-            </div>
-          )}
 
           {error && (
             <p className="text-sm" style={{ color: "var(--accent)" }}>

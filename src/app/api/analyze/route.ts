@@ -38,7 +38,12 @@ function scoreToPriority(score: number): Priority {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { imageBase64, userDescription, apiKey } = body;
+    const { imageBase64, userDescription, apiKey: clientApiKey } = body;
+
+    // Prefer a key the visitor explicitly typed in; otherwise fall back to
+    // the server-side default key (GROQ_API_KEY env var) so judges/testers
+    // can use the live deployment without needing their own Groq account.
+    const apiKey = (clientApiKey && clientApiKey.trim()) || process.env.GROQ_API_KEY;
 
     if (!apiKey) {
       return NextResponse.json(

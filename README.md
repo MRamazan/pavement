@@ -84,7 +84,7 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-You'll be prompted for a **Groq API key** on first use — get a free one at [console.groq.com](https://console.groq.com). It's stored only in your browser's `localStorage` and is sent directly from your browser to our serverless API route, which forwards it to Groq. It is never persisted on any server.
+The app works immediately with no setup if you've configured `GROQ_API_KEY` (see below). Visitors can optionally enter their own Groq key via the "Use your own Groq API key" link if they'd rather use their own quota — it's stored only in their browser's `localStorage` and is never persisted on any server.
 
 ## Deploying to Vercel
 
@@ -93,7 +93,14 @@ npm i -g vercel
 vercel --prod
 ```
 
-No environment variables are required — Vercel auto-detects the Next.js project. See `.env.example` for optional server-side key configuration if you want to pre-fill a demo key instead of requiring visitors to enter their own.
+**Set one environment variable** so judges and testers can use the live demo without needing their own Groq account:
+
+1. Get a free key at [console.groq.com](https://console.groq.com)
+2. In the Vercel dashboard: **Project Settings → Environment Variables**
+3. Add `GROQ_API_KEY` = `gsk_...` (apply to Production, Preview, and Development)
+4. Redeploy
+
+Without this variable, the app still works — visitors will be asked to enter their own key via the in-app banner instead.
 
 ## Demo Data
 
