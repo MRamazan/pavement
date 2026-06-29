@@ -400,8 +400,10 @@ export default function AdminDashboard() {
               className="rounded-xl overflow-hidden lg:sticky lg:top-5 animate-fade-in-up"
               style={{
                 border: "1px solid var(--border)",
-                maxHeight: "calc(100vh - 100px)",
+                height: "calc(100vh - 100px)",
                 alignSelf: "start",
+                display: "flex",
+                flexDirection: "column",
               }}
             >
               <TicketDetail

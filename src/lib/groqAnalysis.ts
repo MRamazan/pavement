@@ -68,7 +68,7 @@ Respond with ONLY this JSON structure, no other text:
   "priorityScore": <integer 1-100 following the scoring criteria>,
   "priorityReason": "<2-3 sentence explanation of exactly why this score was assigned, referencing specific scoring factors>",
   "safetyRisk": <true if there is active risk of bodily harm, otherwise false>,
-  "estimatedRepairCost": "<realistic cost range like '$200–$500', account for labor + materials>",
+  "estimatedRepairCost": "<realistic cost range like '$200-$500', account for labor + materials>",
   "affectedPopulation": "<estimate like '~500 daily pedestrians' or '~1,200 commuters'>",
   "recommendedAction": "<specific, actionable 2-3 step repair plan with timeline>",
   "urgencyWindow": "<specific like 'Within 24 hours', 'Within 48 hours', 'Within 1 week', 'Within 30 days'>",
@@ -114,18 +114,20 @@ Respond with ONLY this JSON structure, no other text:
   const priorityScore = Math.min(100, Math.max(1, Number(parsed.priorityScore) || 50));
   const priority = scoreToPriority(priorityScore);
 
+  const clean = (s: string) => s.replace(/\u2014/g, "-").replace(/\u2013/g, "-");
+
   return {
     issueType: (parsed.issueType as IssueCategory) || "other",
-    issueSummary: String(parsed.issueSummary || "Infrastructure issue detected"),
-    detailedDescription: String(parsed.detailedDescription || ""),
+    issueSummary: clean(String(parsed.issueSummary || "Infrastructure issue detected")),
+    detailedDescription: clean(String(parsed.detailedDescription || "")),
     priorityScore,
     priority,
-    priorityReason: String(parsed.priorityReason || ""),
+    priorityReason: clean(String(parsed.priorityReason || "")),
     safetyRisk: Boolean(parsed.safetyRisk),
-    estimatedRepairCost: String(parsed.estimatedRepairCost || "To be assessed"),
-    affectedPopulation: String(parsed.affectedPopulation || "Unknown"),
-    recommendedAction: String(parsed.recommendedAction || ""),
-    urgencyWindow: String(parsed.urgencyWindow || "Within 30 days"),
+    estimatedRepairCost: clean(String(parsed.estimatedRepairCost || "To be assessed")),
+    affectedPopulation: clean(String(parsed.affectedPopulation || "Unknown")),
+    recommendedAction: clean(String(parsed.recommendedAction || "")),
+    urgencyWindow: clean(String(parsed.urgencyWindow || "Within 30 days")),
     confidence: Math.min(0.99, Math.max(0.1, Number(parsed.confidence) || 0.8)),
     tags: Array.isArray(parsed.tags)
       ? (parsed.tags as string[]).slice(0, 6)
